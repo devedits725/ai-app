@@ -2,37 +2,56 @@ import { useState } from "react";
 import { Sparkles, Loader2 } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
 import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
+import RewardedAdPlaceholder from "@/components/layout/RewardedAdPlaceholder";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { callAI, getRemainingUses, getCachedResult, type FlashcardData } from "@/services/aiService";
 
 const AIFlashcardsPage = () => {
   const [topic, setTopic] = useState("");
   const [cards, setCards] = useState<{ front: string; back: string }[]>([]);
   const [loading, setLoading] = useState(false);
   const [flippedIdx, setFlippedIdx] = useState<number | null>(null);
+  const [showAd, setShowAd] = useState(false);
 
-  const generate = async () => {
+  const handleGenerate = () => {
     if (!topic.trim()) return;
-    if (!navigator.onLine) { toast.error("No internet connection"); return; }
+    const cached = getCachedResult<FlashcardData>("flashcards", topic);
+    if (cached) {
+      setCards(cached.cards);
+      return;
+    }
+    setShowAd(true);
+  };
+
+  const doAICall = async () => {
+    setShowAd(false);
     setLoading(true);
-    // TODO: Connect to Lovable AI
-    setTimeout(() => {
-      setCards([
-        { front: `What is ${topic}?`, back: `AI-generated answer about ${topic} coming soon.` },
-        { front: `Key concept of ${topic}`, back: "AI integration pending." },
-      ]);
+    try {
+      const data = await callAI<FlashcardData>("flashcards", `Generate 8 flashcards about: ${topic}`);
+      setCards(data.cards || []);
+      // Save to localStorage for offline
+      const saved = JSON.parse(localStorage.getItem("ai-flashcards-saved") || "{}");
+      saved[topic] = data.cards;
+      localStorage.setItem("ai-flashcards-saved", JSON.stringify(saved));
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <PageHeader title="AI Flashcard Generator" />
       <div className="flex-1 p-4 space-y-4">
-        <p className="text-xs text-muted-foreground">Enter a topic to generate study flashcards with AI</p>
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-muted-foreground">Enter a topic to generate study flashcards with AI</p>
+          <span className="px-2 py-0.5 rounded-full bg-ai-glow/15 text-ai-glow text-[10px] font-semibold">{getRemainingUses()} left</span>
+        </div>
         <div className="flex gap-2">
           <Input placeholder="e.g. Photosynthesis" value={topic} onChange={(e) => setTopic(e.target.value)} className="flex-1" />
-          <button onClick={generate} disabled={loading || !topic.trim()}
+          <button onClick={handleGenerate} disabled={loading || !topic.trim()}
             className="px-4 rounded-xl bg-primary text-primary-foreground font-medium flex items-center gap-2 disabled:opacity-50 active:scale-95 transition-all">
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
           </button>
@@ -50,6 +69,7 @@ const AIFlashcardsPage = () => {
         )}
       </div>
       <BannerAdPlaceholder />
+      <RewardedAdPlaceholder show={showAd} onReward={doAICall} onClose={() => setShowAd(false)} />
     </div>
   );
 };
