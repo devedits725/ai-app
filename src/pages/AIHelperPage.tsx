@@ -2,22 +2,37 @@ import { useState } from "react";
 import { Send, Copy, Loader2, Wifi, WifiOff } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
 import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
+import RewardedAdPlaceholder from "@/components/layout/RewardedAdPlaceholder";
 import { toast } from "sonner";
+import { callAI, getRemainingUses, getCachedResult, type TextResult } from "@/services/aiService";
 
 const AIHelperPage = () => {
   const [question, setQuestion] = useState("");
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showAd, setShowAd] = useState(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!question.trim()) return;
-    if (!navigator.onLine) { toast.error("No internet connection. AI features require internet."); return; }
+    const cached = getCachedResult<TextResult>("explain", question);
+    if (cached) {
+      setResult(cached.text);
+      return;
+    }
+    setShowAd(true);
+  };
+
+  const doAICall = async () => {
+    setShowAd(false);
     setLoading(true);
-    // TODO: Connect to Lovable AI edge function
-    setTimeout(() => {
-      setResult("AI integration coming soon! This will provide step-by-step explanations for your homework questions.");
+    try {
+      const data = await callAI<TextResult>("explain", question);
+      setResult(data.text);
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -27,7 +42,9 @@ const AIHelperPage = () => {
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           {navigator.onLine ? <Wifi className="w-3.5 h-3.5 text-success" /> : <WifiOff className="w-3.5 h-3.5 text-destructive" />}
           <span>{navigator.onLine ? "Online" : "Offline"}</span>
-          <span className="ml-auto px-2 py-0.5 rounded-full bg-ai-glow/15 text-ai-glow text-[10px] font-semibold">AI Powered</span>
+          <span className="ml-auto px-2 py-0.5 rounded-full bg-ai-glow/15 text-ai-glow text-[10px] font-semibold">
+            {getRemainingUses()} uses left today
+          </span>
         </div>
         <textarea
           value={question}
@@ -52,6 +69,7 @@ const AIHelperPage = () => {
         )}
       </div>
       <BannerAdPlaceholder />
+      <RewardedAdPlaceholder show={showAd} onReward={doAICall} onClose={() => setShowAd(false)} />
     </div>
   );
 };
