@@ -29,8 +29,8 @@ const AIFormulaSearchPage = () => {
     try {
       const data = await callAI<TextResult>("formula", query);
       setResult(data.text);
-    } catch (e: any) {
-      toast.error(e.message);
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "An error occurred");
     } finally {
       setLoading(false);
     }

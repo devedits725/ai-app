@@ -28,8 +28,8 @@ const AIHelperPage = () => {
     try {
       const data = await callAI<TextResult>("explain", question);
       setResult(data.text);
-    } catch (e: any) {
-      toast.error(e.message);
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "An error occurred");
     } finally {
       setLoading(false);
     }

@@ -18,7 +18,7 @@ const converters: Converter[] = [
 ];
 
 const convertTemp = (val: number, from: string, to: string) => {
-  let celsius = from === "°C" ? val : from === "°F" ? (val - 32) * 5 / 9 : val - 273.15;
+  const celsius = from === "°C" ? val : from === "°F" ? (val - 32) * 5 / 9 : val - 273.15;
   if (to === "°C") return celsius;
   if (to === "°F") return celsius * 9 / 5 + 32;
   return celsius + 273.15;

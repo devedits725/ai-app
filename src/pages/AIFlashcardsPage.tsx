@@ -16,7 +16,8 @@ const AIFlashcardsPage = () => {
 
   const handleGenerate = () => {
     if (!topic.trim()) return;
-    const cached = getCachedResult<FlashcardData>("flashcards", topic);
+    const prompt = `Generate 8 flashcards about: ${topic}`;
+    const cached = getCachedResult<FlashcardData>("flashcards", prompt);
     if (cached) {
       setCards(cached.cards);
       return;
@@ -25,17 +26,18 @@ const AIFlashcardsPage = () => {
   };
 
   const doAICall = async () => {
+    const prompt = `Generate 8 flashcards about: ${topic}`;
     setShowAd(false);
     setLoading(true);
     try {
-      const data = await callAI<FlashcardData>("flashcards", `Generate 8 flashcards about: ${topic}`);
+      const data = await callAI<FlashcardData>("flashcards", prompt);
       setCards(data.cards || []);
       // Save to localStorage for offline
       const saved = JSON.parse(localStorage.getItem("ai-flashcards-saved") || "{}");
       saved[topic] = data.cards;
       localStorage.setItem("ai-flashcards-saved", JSON.stringify(saved));
-    } catch (e: any) {
-      toast.error(e.message);
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "An error occurred");
     } finally {
       setLoading(false);
     }

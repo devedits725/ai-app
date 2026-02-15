@@ -46,7 +46,7 @@ export function getCachedResult<T>(type: string, prompt: string): T | null {
   return null;
 }
 
-function setCachedResult(type: string, prompt: string, data: any): void {
+function setCachedResult(type: string, prompt: string, data: unknown): void {
   try {
     const key = hashPrompt(type, prompt);
     localStorage.setItem(key, JSON.stringify(data));
@@ -55,7 +55,7 @@ function setCachedResult(type: string, prompt: string, data: any): void {
 
 export type AIType = "explain" | "flashcards" | "quiz" | "formula";
 
-export async function callAI<T = any>(type: AIType, prompt: string): Promise<T> {
+export async function callAI<T = unknown>(type: AIType, prompt: string): Promise<T> {
   // Check offline
   if (!navigator.onLine) {
     const cached = getCachedResult<T>(type, prompt);

@@ -7,26 +7,37 @@ const corsHeaders = {
 };
 
 const SYSTEM_PROMPTS: Record<string, string> = {
-  explain: `You are a friendly tutor for school students. When given a homework question:
-1. Identify the subject and topic
-2. Explain step-by-step in simple language a 14-year-old can understand
-3. Show any relevant formulas
-4. Give the final answer
-Keep it concise but thorough. Use bullet points and numbered steps.`,
+  explain: `You are a friendly homework helper tutor for students. When given a question, explain it in a natural, conversational way like a helpful teacher would.
 
-  flashcards: `You are a flashcard generator for students. Given a topic, generate exactly 8 flashcards.
-You MUST respond using the generate_flashcards tool.`,
+- Write in a friendly, encouraging tone
+- Use simple language a 14-year-old can understand
+- Avoid overly formal language or excessive formatting
+- Don't use numbered sections or bullet points unless absolutely necessary
+- Explain step-by-step but keep it conversational
+- Include relevant formulas naturally in the explanation
+- End with a clear, simple answer
+- Keep it under 200 words unless the topic is complex
+
+Think of how you'd explain this to a friend who's confused - be helpful and clear, not like a textbook.`,
+
+  flashcards: `You are a study flashcard generator for students. Given a topic, generate exactly 8 flashcards.
+You MUST respond using the generate_flashcards tool.
+Make the flashcards conversational and natural - avoid overly formal language.`,
 
   quiz: `You are a quiz generator for students. Given a topic, generate exactly 5 multiple-choice questions.
-You MUST respond using the generate_quiz tool.`,
+You MUST respond using the generate_quiz tool.
+Write questions in a natural, conversational style that students would actually encounter.`,
 
-  formula: `You are a formula search engine for students. Given a natural language query, find the most relevant formula.
-Respond with:
-1. The formula name
-2. The formula itself
-3. What each variable means
-4. A brief example of how to use it
-Keep it concise and student-friendly.`,
+  formula: `You are a helpful formula finder for students. Given a natural language query, find and explain the most relevant formula.
+
+- Explain in a friendly, conversational way
+- Don't use numbered lists or bullet points
+- Write as if you're explaining to a classmate
+- Keep it simple and clear
+- Include a practical example
+- Avoid overly academic language
+
+Just explain what the formula is, what the variables mean, and how to use it in a natural way.`,
 };
 
 const TOOLS: Record<string, any[]> = {
@@ -120,38 +131,33 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
-
-    const body: any = {
-      model: "google/gemini-3-flash-preview",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: prompt },
-      ],
-    };
-
-    // Use tool calling for structured output
-    if (TOOLS[type]) {
-      body.tools = TOOLS[type];
-      body.tool_choice = {
-        type: "function",
-        function: { name: TOOLS[type][0].function.name },
-      };
-    }
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY is not configured");
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
 
+    // Convert to Gemini API format
+    const contents = [
+      { role: "user", parts: [{ text: `${systemPrompt}\n\n${prompt}` }] },
+    ];
+
     const response = await fetch(
-      "https://ai.gateway.lovable.dev/v1/chat/completions",
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          contents,
+          generationConfig: {
+            temperature: 0.9,
+            topP: 0.9,
+            topK: 32,
+            maxOutputTokens: 1024,
+          },
+        }),
         signal: controller.signal,
       }
     );
@@ -180,17 +186,34 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const choice = data.choices?.[0];
+    const candidate = data.candidates?.[0];
+    
+    if (!candidate) {
+      console.error("No response from Gemini:", data);
+      return new Response(
+        JSON.stringify({ error: "No AI response generated" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     let result: any;
+    const content = candidate.content?.parts?.[0]?.text || "";
 
-    if (choice?.message?.tool_calls?.length) {
-      // Structured output via tool calling
-      const toolCall = choice.message.tool_calls[0];
-      result = JSON.parse(toolCall.function.arguments);
+    // Try to parse structured output
+    if (type === "flashcards" || type === "quiz") {
+      try {
+        // Find JSON in the response
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          result = JSON.parse(jsonMatch[0]);
+        } else {
+          result = { text: content };
+        }
+      } catch {
+        result = { text: content };
+      }
     } else {
-      // Plain text response
-      result = { text: choice?.message?.content || "No response generated." };
+      result = { text: content || "No response generated." };
     }
 
     return new Response(JSON.stringify(result), {

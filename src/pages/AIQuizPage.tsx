@@ -21,7 +21,8 @@ const AIQuizPage = () => {
 
   const handleGenerate = () => {
     if (!topic.trim()) return;
-    const cached = getCachedResult<QuizData>("quiz", topic);
+    const prompt = `Generate 5 MCQ questions about: ${topic}`;
+    const cached = getCachedResult<QuizData>("quiz", prompt);
     if (cached) {
       setQuestions(cached.questions);
       setCurrent(0); setScore(0); setSelected(null); setFinished(false);
@@ -31,14 +32,15 @@ const AIQuizPage = () => {
   };
 
   const doAICall = async () => {
+    const prompt = `Generate 5 MCQ questions about: ${topic}`;
     setShowAd(false);
     setLoading(true);
     try {
-      const data = await callAI<QuizData>("quiz", `Generate 5 MCQ questions about: ${topic}`);
+      const data = await callAI<QuizData>("quiz", prompt);
       setQuestions(data.questions || []);
       setCurrent(0); setScore(0); setSelected(null); setFinished(false);
-    } catch (e: any) {
-      toast.error(e.message);
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : "An error occurred");
     } finally {
       setLoading(false);
     }
