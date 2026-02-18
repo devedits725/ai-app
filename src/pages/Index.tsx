@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Settings, Calculator, BookOpen, ArrowLeftRight, Brain, ClipboardList, Sparkles, MessageSquare, Layers, Search } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
+import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 
 const modules = [
   { title: "Calculator Tools", subtitle: "Math made easy", icon: Calculator, path: "/calculator", color: "bg-blue-500/10 text-blue-600 dark:text-blue-400" },
@@ -19,9 +20,9 @@ const Index = () => {
   const { theme } = useTheme();
 
   return (
-    <div className="min-h-screen bg-background safe-top safe-bottom">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="px-4 pt-4 pb-2 flex items-center justify-between">
+      <header className="px-4 pt-4 pb-2 flex items-center justify-between safe-top">
         <div>
           <h1 className="text-xl font-bold">📚 Student Toolkit</h1>
           <p className="text-xs text-muted-foreground">Your pocket study companion</p>
@@ -32,7 +33,7 @@ const Index = () => {
       </header>
 
       {/* Module Grid */}
-      <main className="px-4 pb-8 pt-2">
+      <main className="px-4 pb-8 pt-2 flex-1">
         <div className="grid grid-cols-2 gap-3">
           {modules.map((mod) => (
             <button
@@ -56,6 +57,8 @@ const Index = () => {
           ))}
         </div>
       </main>
+
+      <BannerAdPlaceholder />
     </div>
   );
 };
