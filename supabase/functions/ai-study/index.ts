@@ -21,11 +21,11 @@ const SYSTEM_PROMPTS: Record<string, string> = {
 Think of how you'd explain this to a friend who's confused - be helpful and clear, not like a textbook.`,
 
   flashcards: `You are a study flashcard generator for students. Given a topic, generate exactly 8 flashcards.
-Return a JSON object with a 'cards' array. Each card has 'front' and 'back' fields.
+You MUST respond using the generate_flashcards tool.
 Make the flashcards conversational and natural - avoid overly formal language.`,
 
   quiz: `You are a quiz generator for students. Given a topic, generate exactly 5 multiple-choice questions.
-Return a JSON object with a 'questions' array. Each question has 'question', 'options' (array of 4 strings), 'answer' (0-3 index), and 'explanation' fields.
+You MUST respond using the generate_quiz tool.
 Write questions in a natural, conversational style that students would actually encounter.`,
 
   formula: `You are a helpful formula finder for students. Given a natural language query, find and explain the most relevant formula.
@@ -40,6 +40,73 @@ Write questions in a natural, conversational style that students would actually 
 Just explain what the formula is, what the variables mean, and how to use it in a natural way.`,
 };
 
+const TOOLS: Record<string, any[]> = {
+  flashcards: [
+    {
+      type: "function",
+      function: {
+        name: "generate_flashcards",
+        description: "Generate 8 study flashcards on the given topic",
+        parameters: {
+          type: "object",
+          properties: {
+            cards: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  front: { type: "string", description: "Question or term" },
+                  back: { type: "string", description: "Answer or definition" },
+                },
+                required: ["front", "back"],
+                additionalProperties: false,
+              },
+            },
+          },
+          required: ["cards"],
+          additionalProperties: false,
+        },
+      },
+    },
+  ],
+  quiz: [
+    {
+      type: "function",
+      function: {
+        name: "generate_quiz",
+        description: "Generate 5 MCQ questions with options and explanations",
+        parameters: {
+          type: "object",
+          properties: {
+            questions: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  question: { type: "string" },
+                  options: {
+                    type: "array",
+                    items: { type: "string" },
+                    description: "Exactly 4 options",
+                  },
+                  answer: {
+                    type: "number",
+                    description: "Index of correct option (0-3)",
+                  },
+                  explanation: { type: "string" },
+                },
+                required: ["question", "options", "answer", "explanation"],
+                additionalProperties: false,
+              },
+            },
+          },
+          required: ["questions"],
+          additionalProperties: false,
+        },
+      },
+    },
+  ],
+};
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -70,69 +137,10 @@ serve(async (req) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
 
-    // Convert to Gemini API format with native system instructions and JSON mode if needed
-    const body: any = {
-      contents: [
-        { role: "user", parts: [{ text: prompt }] },
-      ],
-      system_instruction: {
-        parts: [{ text: systemPrompt }]
-      },
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 1024,
-      },
-    };
-
-    // Use JSON mode for structured types
-    if (type === "flashcards" || type === "quiz") {
-      body.generationConfig.response_mime_type = "application/json";
-
-      if (type === "flashcards") {
-        body.generationConfig.response_schema = {
-          type: "object",
-          properties: {
-            cards: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  front: { type: "string" },
-                  back: { type: "string" },
-                },
-                required: ["front", "back"],
-              },
-            },
-          },
-          required: ["cards"],
-        };
-      } else if (type === "quiz") {
-        body.generationConfig.response_schema = {
-          type: "object",
-          properties: {
-            questions: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  question: { type: "string" },
-                  options: {
-                    type: "array",
-                    items: { type: "string" },
-                    minItems: 4,
-                    maxItems: 4,
-                  },
-                  answer: { type: "number" },
-                  explanation: { type: "string" },
-                },
-                required: ["question", "options", "answer", "explanation"],
-              },
-            },
-          },
-          required: ["questions"],
-        };
-      }
-    }
+    // Convert to Gemini API format
+    const contents = [
+      { role: "user", parts: [{ text: `${systemPrompt}\n\n${prompt}` }] },
+    ];
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
@@ -141,7 +149,15 @@ serve(async (req) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          contents,
+          generationConfig: {
+            temperature: 0.9,
+            topP: 0.9,
+            topK: 32,
+            maxOutputTokens: 1024,
+          },
+        }),
         signal: controller.signal,
       }
     );
@@ -180,21 +196,21 @@ serve(async (req) => {
       );
     }
 
-    const content = candidate.content?.parts?.[0]?.text || "";
     let result: any;
+    const content = candidate.content?.parts?.[0]?.text || "";
 
+    // Try to parse structured output
     if (type === "flashcards" || type === "quiz") {
       try {
-        result = JSON.parse(content);
-      } catch (e) {
-        console.error("Failed to parse Gemini JSON response:", content, e);
-        // Fallback to regex if Gemini didn't return pure JSON
+        // Find JSON in the response
         const jsonMatch = content.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
           result = JSON.parse(jsonMatch[0]);
         } else {
           result = { text: content };
         }
+      } catch {
+        result = { text: content };
       }
     } else {
       result = { text: content || "No response generated." };
