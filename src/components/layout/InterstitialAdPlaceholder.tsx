@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import { useAds } from "@/contexts/AdsContext";
 
 interface Props {
   show: boolean;
@@ -6,9 +7,11 @@ interface Props {
 }
 
 const InterstitialAdPlaceholder = ({ show, onClose }: Props) => {
-  if (!show) return null;
+  const { adsEnabled } = useAds();
+
+  if (!show || !adsEnabled) return null;
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-6">
+    <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-6 backdrop-blur-sm">
       <div className="bg-card rounded-2xl border border-border w-full max-w-sm p-8 flex flex-col items-center gap-4 relative">
         <button onClick={onClose} className="absolute top-3 right-3 p-1 rounded-lg hover:bg-secondary">
           <X className="w-5 h-5" />

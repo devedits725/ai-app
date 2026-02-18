@@ -1,10 +1,14 @@
-import { Moon, Sun, Share2, Star, Mail, ShieldOff } from "lucide-react";
+import { Moon, Sun, Share2, Star, Mail, ShieldOff, Info, ShieldCheck } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useAds } from "@/contexts/AdsContext";
 import PageHeader from "@/components/layout/PageHeader";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const SettingsPage = () => {
   const { theme, toggleTheme } = useTheme();
+  const { adsEnabled, toggleAds } = useAds();
+  const navigate = useNavigate();
 
   const handleShare = async () => {
     try {
@@ -22,9 +26,15 @@ const SettingsPage = () => {
         <SettingRow icon={<Share2 className="w-5 h-5" />} label="Share App" onClick={handleShare} />
         <SettingRow icon={<Star className="w-5 h-5" />} label="Rate App" onClick={() => toast.info("Rating coming soon!")} />
         <SettingRow icon={<Mail className="w-5 h-5" />} label="Send Feedback" onClick={() => window.open("mailto:feedback@studenttoolkit.app?subject=App Feedback")} />
-        <SettingRow icon={<ShieldOff className="w-5 h-5" />} label="Remove Ads" onClick={() => toast.info("Premium coming soon!")} badge="Coming Soon" />
+        <SettingRow icon={<ShieldOff className="w-5 h-5" />} label={adsEnabled ? "Remove Ads" : "Ads Removed"} onClick={() => { toggleAds(); if (adsEnabled) toast.success("Ads removed (Premium Mock)"); else toast.info("Ads restored"); }} badge={!adsEnabled ? "Premium" : undefined} />
+        <SettingRow icon={<Info className="w-5 h-5" />} label="Credits" onClick={() => navigate("/credits")} />
+        <SettingRow icon={<ShieldCheck className="w-5 h-5" />} label="Privacy Policy" onClick={() => navigate("/privacy")} />
       </div>
-      <p className="text-center text-xs text-muted-foreground mt-8">AI Student Pocket Toolkit v1.0</p>
+      <div className="mt-8 px-4 text-center space-y-1">
+        <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">AI Student Pocket Toolkit</p>
+        <p className="text-[10px] text-muted-foreground">Version 1.0.0</p>
+        <p className="text-[10px] text-muted-foreground mt-2">© 2024-2025 AI Student Toolkit. All rights reserved.</p>
+      </div>
     </div>
   );
 };
