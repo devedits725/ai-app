@@ -28,8 +28,8 @@ const BannerAdPlaceholder = () => {
       <ins
         className="adsbygoogle"
         style={{ display: "block", width: "100%", height: "64px" }}
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" // Placeholder: User should replace this
-        data-ad-slot="XXXXXXXXXX" // Placeholder: User should replace this
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" // REPLACE WITH YOUR ADSENSE PUBLISHER ID
+        data-ad-slot="XXXXXXXXXX" // REPLACE WITH YOUR AD SLOT ID
         data-full-width-responsive="true"
       ></ins>
 

@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Settings, Calculator, BookOpen, ArrowLeftRight, Brain, ClipboardList, Sparkles, MessageSquare, Layers, Search } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
-import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 
 const modules = [
   { title: "Calculator Tools", subtitle: "Math made easy", icon: Calculator, path: "/calculator", color: "bg-blue-500/10 text-blue-600 dark:text-blue-400" },
@@ -58,7 +57,6 @@ const Index = () => {
         </div>
       </main>
 
-      <BannerAdPlaceholder />
     </div>
   );
 };

@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { Shuffle, ChevronLeft, ChevronRight, Check, X } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
-import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 import flashcardsData from "@/data/flashcards.json";
 
 const categories = Object.keys(flashcardsData) as Array<keyof typeof flashcardsData>;
@@ -72,7 +71,6 @@ const FlashcardsPage = () => {
           <Shuffle className="w-3.5 h-3.5" /> {shuffled ? "Unshuffle" : "Shuffle"}
         </button>
       </div>
-      <BannerAdPlaceholder />
     </div>
   );
 };

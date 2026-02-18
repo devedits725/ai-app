@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Brain, Loader2, RotateCcw } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
-import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 import RewardedAdPlaceholder from "@/components/layout/RewardedAdPlaceholder";
 import InterstitialAdPlaceholder from "@/components/layout/InterstitialAdPlaceholder";
 import { Input } from "@/components/ui/input";
@@ -134,7 +133,6 @@ const AIQuizPage = () => {
           </div>
         )}
       </div>
-      <BannerAdPlaceholder />
       <RewardedAdPlaceholder show={showAd} onReward={handleReward} onClose={() => setShowAd(false)} />
       <InterstitialAdPlaceholder show={showInterstitial} onClose={() => setShowInterstitial(false)} />
     </div>

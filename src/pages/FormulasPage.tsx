@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { Search, Bookmark, BookmarkCheck, Copy } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
-import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -79,7 +78,6 @@ const FormulasPage = () => {
           </TabsContent>
         ))}
       </Tabs>
-      <BannerAdPlaceholder />
     </div>
   );
 };

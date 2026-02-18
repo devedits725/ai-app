@@ -1,6 +1,5 @@
 import { useState } from "react";
 import PageHeader from "@/components/layout/PageHeader";
-import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
@@ -40,7 +39,6 @@ const ConverterPage = () => {
           </TabsContent>
         ))}
       </Tabs>
-      <BannerAdPlaceholder />
     </div>
   );
 };

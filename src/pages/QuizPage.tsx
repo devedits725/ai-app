@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { RotateCcw } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
-import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 import quizData from "@/data/quizzes.json";
 
 const subjects = Object.keys(quizData) as Array<keyof typeof quizData>;
@@ -88,7 +87,6 @@ const QuizPage = () => {
           </div>
         )}
       </div>
-      <BannerAdPlaceholder />
     </div>
   );
 };

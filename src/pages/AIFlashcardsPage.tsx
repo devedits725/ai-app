@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Sparkles, Loader2 } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
-import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 import RewardedAdPlaceholder from "@/components/layout/RewardedAdPlaceholder";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -80,7 +79,6 @@ const AIFlashcardsPage = () => {
           </div>
         )}
       </div>
-      <BannerAdPlaceholder />
       <RewardedAdPlaceholder show={showAd} onReward={handleReward} onClose={() => setShowAd(false)} />
     </div>
   );

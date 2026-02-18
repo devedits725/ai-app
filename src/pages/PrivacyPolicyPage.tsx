@@ -38,7 +38,7 @@ const PrivacyPolicyPage = () => {
       </div>
 
       <p className="text-center text-[10px] text-muted-foreground pb-8">
-        Last updated: May 2024
+        Last updated: January 2025
       </p>
     </div>
   );

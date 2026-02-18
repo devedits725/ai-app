@@ -1,6 +1,5 @@
 import { useState } from "react";
 import PageHeader from "@/components/layout/PageHeader";
-import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import BasicCalculator from "@/components/calculators/BasicCalculator";
 import PercentageCalculator from "@/components/calculators/PercentageCalculator";
@@ -30,7 +29,6 @@ const CalculatorPage = () => {
           <TabsContent value="exam"><ExamScoreCalculator /></TabsContent>
         </div>
       </Tabs>
-      <BannerAdPlaceholder />
     </div>
   );
 };

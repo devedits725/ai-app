@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Send, Copy, Loader2, Wifi, WifiOff } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
-import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 import RewardedAdPlaceholder from "@/components/layout/RewardedAdPlaceholder";
 import { toast } from "sonner";
 import { callAI, getRemainingUses, addBonusUses, getCachedResult, type TextResult } from "@/services/aiService";
@@ -78,7 +77,6 @@ const AIHelperPage = () => {
           </div>
         )}
       </div>
-      <BannerAdPlaceholder />
       <RewardedAdPlaceholder show={showAd} onReward={handleReward} onClose={() => setShowAd(false)} />
     </div>
   );
