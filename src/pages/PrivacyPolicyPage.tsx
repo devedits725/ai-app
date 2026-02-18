@@ -22,7 +22,7 @@ const PrivacyPolicyPage = () => {
 
           <section className="space-y-2">
             <h3 className="text-base font-bold text-foreground">2. AI Features</h3>
-            <p>When you use AI features, your queries are processed by our backend services and shared with AI providers (like OpenAI) to generate responses. We do not store these queries permanently.</p>
+            <p>When you use AI features, your queries are processed by our backend services and shared with AI providers (like Google Gemini) to generate responses. We do not store these queries permanently.</p>
           </section>
 
           <section className="space-y-2">
