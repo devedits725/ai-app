@@ -5,7 +5,7 @@ import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 import RewardedAdPlaceholder from "@/components/layout/RewardedAdPlaceholder";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { callAI, getRemainingUses, getCachedResult, type FlashcardData } from "@/services/aiService";
+import { callAI, getRemainingUses, addBonusUses, getCachedResult, type FlashcardData } from "@/services/aiService";
 
 const AIFlashcardsPage = () => {
   const [topic, setTopic] = useState("");
@@ -22,7 +22,17 @@ const AIFlashcardsPage = () => {
       setCards(cached.cards);
       return;
     }
-    setShowAd(true);
+
+    if (getRemainingUses() > 0) {
+      doAICall();
+    } else {
+      setShowAd(true);
+    }
+  };
+
+  const handleReward = () => {
+    addBonusUses(10);
+    doAICall();
   };
 
   const doAICall = async () => {
@@ -46,7 +56,7 @@ const AIFlashcardsPage = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <PageHeader title="AI Flashcard Generator" />
-      <div className="flex-1 p-4 space-y-4">
+      <div className="flex-1 p-4 pb-20 space-y-4">
         <div className="flex items-center justify-between">
           <p className="text-xs text-muted-foreground">Enter a topic to generate study flashcards with AI</p>
           <span className="px-2 py-0.5 rounded-full bg-ai-glow/15 text-ai-glow text-[10px] font-semibold">{getRemainingUses()} left</span>
@@ -71,7 +81,7 @@ const AIFlashcardsPage = () => {
         )}
       </div>
       <BannerAdPlaceholder />
-      <RewardedAdPlaceholder show={showAd} onReward={doAICall} onClose={() => setShowAd(false)} />
+      <RewardedAdPlaceholder show={showAd} onReward={handleReward} onClose={() => setShowAd(false)} />
     </div>
   );
 };

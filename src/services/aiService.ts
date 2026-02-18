@@ -16,14 +16,18 @@ function hashPrompt(type: string, prompt: string): string {
   return `${CACHE_PREFIX}${hash}`;
 }
 
-function getDailyCounter(): { count: number; date: string } {
+function getDailyCounter(): { count: number; bonus: number; date: string } {
   try {
     const stored = JSON.parse(localStorage.getItem(COUNTER_KEY) || "{}");
     const today = new Date().toISOString().slice(0, 10);
-    if (stored.date !== today) return { count: 0, date: today };
-    return stored;
+    if (stored.date !== today) return { count: 0, bonus: 0, date: today };
+    return {
+      count: stored.count || 0,
+      bonus: stored.bonus || 0,
+      date: today
+    };
   } catch {
-    return { count: 0, date: new Date().toISOString().slice(0, 10) };
+    return { count: 0, bonus: 0, date: new Date().toISOString().slice(0, 10) };
   }
 }
 
@@ -33,8 +37,15 @@ function incrementCounter(): void {
   localStorage.setItem(COUNTER_KEY, JSON.stringify(counter));
 }
 
+export function addBonusUses(amount: number): void {
+  const counter = getDailyCounter();
+  counter.bonus += amount;
+  localStorage.setItem(COUNTER_KEY, JSON.stringify(counter));
+}
+
 export function getRemainingUses(): number {
-  return Math.max(0, DAILY_LIMIT - getDailyCounter().count);
+  const counter = getDailyCounter();
+  return Math.max(0, (DAILY_LIMIT + counter.bonus) - counter.count);
 }
 
 export function getCachedResult<T>(type: string, prompt: string): T | null {

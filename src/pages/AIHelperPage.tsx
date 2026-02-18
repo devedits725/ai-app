@@ -4,7 +4,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 import RewardedAdPlaceholder from "@/components/layout/RewardedAdPlaceholder";
 import { toast } from "sonner";
-import { callAI, getRemainingUses, getCachedResult, type TextResult } from "@/services/aiService";
+import { callAI, getRemainingUses, addBonusUses, getCachedResult, type TextResult } from "@/services/aiService";
 
 const AIHelperPage = () => {
   const [question, setQuestion] = useState("");
@@ -19,7 +19,17 @@ const AIHelperPage = () => {
       setResult(cached.text);
       return;
     }
-    setShowAd(true);
+
+    if (getRemainingUses() > 0) {
+      doAICall();
+    } else {
+      setShowAd(true);
+    }
+  };
+
+  const handleReward = () => {
+    addBonusUses(10);
+    doAICall();
   };
 
   const doAICall = async () => {
@@ -38,7 +48,7 @@ const AIHelperPage = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <PageHeader title="AI Homework Helper" />
-      <div className="flex-1 p-4 space-y-4">
+      <div className="flex-1 p-4 pb-20 space-y-4">
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           {navigator.onLine ? <Wifi className="w-3.5 h-3.5 text-success" /> : <WifiOff className="w-3.5 h-3.5 text-destructive" />}
           <span>{navigator.onLine ? "Online" : "Offline"}</span>
@@ -69,7 +79,7 @@ const AIHelperPage = () => {
         )}
       </div>
       <BannerAdPlaceholder />
-      <RewardedAdPlaceholder show={showAd} onReward={doAICall} onClose={() => setShowAd(false)} />
+      <RewardedAdPlaceholder show={showAd} onReward={handleReward} onClose={() => setShowAd(false)} />
     </div>
   );
 };

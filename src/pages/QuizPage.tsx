@@ -46,7 +46,7 @@ const QuizPage = () => {
         ))}
       </div>
 
-      <div className="flex-1 p-4">
+      <div className="flex-1 p-4 pb-20">
         {finished ? (
           <div className="text-center space-y-4 mt-8">
             <p className="text-5xl font-bold text-primary">{score}/{questions.length}</p>

@@ -33,7 +33,7 @@ const Index = () => {
       </header>
 
       {/* Module Grid */}
-      <main className="px-4 pb-8 pt-2 flex-1">
+      <main className="px-4 pb-20 pt-2 flex-1">
         <div className="grid grid-cols-2 gap-3">
           {modules.map((mod) => (
             <button
