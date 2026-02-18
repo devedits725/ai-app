@@ -4,7 +4,7 @@ import { ExternalLink, Heart } from "lucide-react";
 const credits = [
   { category: "Framework & Library", items: ["React", "TypeScript", "Vite", "TanStack Query", "React Router"] },
   { category: "UI & Styling", items: ["Tailwind CSS", "shadcn/ui", "Lucide Icons", "Framer Motion (via shadcn)"] },
-  { category: "Backend & AI", items: ["Supabase", "OpenAI API", "Deno (Edge Functions)"] },
+  { category: "Backend & AI", items: ["Supabase", "Google Gemini API", "Deno (Edge Functions)"] },
   { category: "Mobile Support", items: ["Capacitor", "Expo (Native Branch)"] },
 ];
 
