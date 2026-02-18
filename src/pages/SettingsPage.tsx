@@ -33,7 +33,7 @@ const SettingsPage = () => {
       <div className="mt-8 px-4 text-center space-y-1">
         <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">AI Student Pocket Toolkit</p>
         <p className="text-[10px] text-muted-foreground">Version 1.0.0</p>
-        <p className="text-[10px] text-muted-foreground mt-2">© 2024-2025 AI Student Toolkit. All rights reserved.</p>
+        <p className="text-[10px] text-muted-foreground mt-2">© 2025-2026 Dev raheja all rights reserved.</p>
       </div>
     </div>
   );
