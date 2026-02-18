@@ -1,4 +1,4 @@
-import { Moon, Sun, Share2, Star, Mail, ShieldOff, Info, ShieldCheck } from "lucide-react";
+import { Moon, Sun, Share2, Star, Mail, Info, ShieldCheck } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAds } from "@/contexts/AdsContext";
 import PageHeader from "@/components/layout/PageHeader";
@@ -26,7 +26,6 @@ const SettingsPage = () => {
         <SettingRow icon={<Share2 className="w-5 h-5" />} label="Share App" onClick={handleShare} />
         <SettingRow icon={<Star className="w-5 h-5" />} label="Rate App" onClick={() => toast.info("Rating coming soon!")} />
         <SettingRow icon={<Mail className="w-5 h-5" />} label="Send Feedback" onClick={() => window.open("mailto:feedback@studenttoolkit.app?subject=App Feedback")} />
-        <SettingRow icon={<ShieldOff className="w-5 h-5" />} label={adsEnabled ? "Remove Ads" : "Ads Removed"} onClick={() => { toggleAds(); if (adsEnabled) toast.success("Ads removed (Premium Mock)"); else toast.info("Ads restored"); }} badge={!adsEnabled ? "Premium" : undefined} />
         <SettingRow icon={<Info className="w-5 h-5" />} label="Credits" onClick={() => navigate("/credits")} />
         <SettingRow icon={<ShieldCheck className="w-5 h-5" />} label="Privacy Policy" onClick={() => navigate("/privacy")} />
       </div>
