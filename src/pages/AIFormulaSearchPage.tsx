@@ -5,7 +5,7 @@ import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 import RewardedAdPlaceholder from "@/components/layout/RewardedAdPlaceholder";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { callAI, getRemainingUses, getCachedResult, type TextResult } from "@/services/aiService";
+import { callAI, getRemainingUses, addBonusUses, getCachedResult, type TextResult } from "@/services/aiService";
 
 const AIFormulaSearchPage = () => {
   const [query, setQuery] = useState("");
@@ -20,7 +20,17 @@ const AIFormulaSearchPage = () => {
       setResult(cached.text);
       return;
     }
-    setShowAd(true);
+
+    if (getRemainingUses() > 0) {
+      doAICall();
+    } else {
+      setShowAd(true);
+    }
+  };
+
+  const handleReward = () => {
+    addBonusUses(10);
+    doAICall();
   };
 
   const doAICall = async () => {
@@ -39,7 +49,7 @@ const AIFormulaSearchPage = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <PageHeader title="Smart Formula Search" />
-      <div className="flex-1 p-4 space-y-4">
+      <div className="flex-1 p-4 pb-20 space-y-4">
         <div className="flex items-center justify-between">
           <p className="text-xs text-muted-foreground">Describe what you need in plain English</p>
           <span className="px-2 py-0.5 rounded-full bg-ai-glow/15 text-ai-glow text-[10px] font-semibold">{getRemainingUses()} left</span>
@@ -64,7 +74,7 @@ const AIFormulaSearchPage = () => {
         )}
       </div>
       <BannerAdPlaceholder />
-      <RewardedAdPlaceholder show={showAd} onReward={doAICall} onClose={() => setShowAd(false)} />
+      <RewardedAdPlaceholder show={showAd} onReward={handleReward} onClose={() => setShowAd(false)} />
     </div>
   );
 };

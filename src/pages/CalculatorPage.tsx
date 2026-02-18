@@ -22,7 +22,7 @@ const CalculatorPage = () => {
             <TabsTrigger value="exam" className="text-xs py-1.5">Exam</TabsTrigger>
           </TabsList>
         </div>
-        <div className="flex-1 p-4">
+        <div className="flex-1 p-4 pb-20">
           <TabsContent value="basic"><BasicCalculator /></TabsContent>
           <TabsContent value="percent"><PercentageCalculator /></TabsContent>
           <TabsContent value="discount"><DiscountCalculator /></TabsContent>

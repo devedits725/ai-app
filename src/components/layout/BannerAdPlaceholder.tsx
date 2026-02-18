@@ -23,7 +23,7 @@ const BannerAdPlaceholder = () => {
   if (!adsEnabled) return null;
 
   return (
-    <div className="w-full min-h-[64px] bg-muted/30 border-t border-border flex items-center justify-center safe-bottom overflow-hidden">
+    <div className="w-full min-h-[64px] bg-background/80 backdrop-blur-sm border-t border-border flex items-center justify-center safe-bottom overflow-hidden sticky bottom-0 z-50">
       {/* Real AdSense Ad Unit */}
       <ins
         className="adsbygoogle"

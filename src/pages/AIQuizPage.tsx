@@ -6,7 +6,7 @@ import RewardedAdPlaceholder from "@/components/layout/RewardedAdPlaceholder";
 import InterstitialAdPlaceholder from "@/components/layout/InterstitialAdPlaceholder";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { callAI, getRemainingUses, getCachedResult, type QuizData } from "@/services/aiService";
+import { callAI, getRemainingUses, addBonusUses, getCachedResult, type QuizData } from "@/services/aiService";
 
 const AIQuizPage = () => {
   const [topic, setTopic] = useState("");
@@ -28,7 +28,17 @@ const AIQuizPage = () => {
       setCurrent(0); setScore(0); setSelected(null); setFinished(false);
       return;
     }
-    setShowAd(true);
+
+    if (getRemainingUses() > 0) {
+      doAICall();
+    } else {
+      setShowAd(true);
+    }
+  };
+
+  const handleReward = () => {
+    addBonusUses(10);
+    doAICall();
   };
 
   const doAICall = async () => {
@@ -67,7 +77,7 @@ const AIQuizPage = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <PageHeader title="AI Quiz Generator" />
-      <div className="flex-1 p-4 space-y-4">
+      <div className="flex-1 p-4 pb-20 space-y-4">
         {questions.length === 0 ? (
           <>
             <div className="flex items-center justify-between">
@@ -125,7 +135,7 @@ const AIQuizPage = () => {
         )}
       </div>
       <BannerAdPlaceholder />
-      <RewardedAdPlaceholder show={showAd} onReward={doAICall} onClose={() => setShowAd(false)} />
+      <RewardedAdPlaceholder show={showAd} onReward={handleReward} onClose={() => setShowAd(false)} />
       <InterstitialAdPlaceholder show={showInterstitial} onClose={() => setShowInterstitial(false)} />
     </div>
   );

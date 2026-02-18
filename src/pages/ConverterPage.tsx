@@ -35,7 +35,7 @@ const ConverterPage = () => {
           </TabsList>
         </div>
         {converters.map((conv) => (
-          <TabsContent key={conv.key} value={conv.key} className="flex-1 p-4">
+          <TabsContent key={conv.key} value={conv.key} className="flex-1 p-4 pb-20">
             <ConverterPanel converter={conv} />
           </TabsContent>
         ))}
