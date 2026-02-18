@@ -86,7 +86,7 @@ export default function SettingsScreen() {
           label="Send Feedback"
           onPress={() =>
             Linking.openURL(
-              'mailto:feedback@studenttoolkit.app?subject=App%20Feedback'
+              'mailto:devcooksreal@gmail.com?subject=App%20Feedback'
             )
           }
           colors={colors}
