@@ -1,0 +1,63 @@
+{
+  "math": {
+    "Algebra": [
+      { "name": "Quadratic Formula", "formula": "x = (-b ± √(b²-4ac)) / 2a", "description": "Solves ax² + bx + c = 0" },
+      { "name": "Slope", "formula": "m = (y₂ - y₁) / (x₂ - x₁)", "description": "Slope between two points" },
+      { "name": "Distance Formula", "formula": "d = √((x₂-x₁)² + (y₂-y₁)²)", "description": "Distance between two points" },
+      { "name": "Midpoint", "formula": "M = ((x₁+x₂)/2, (y₁+y₂)/2)", "description": "Midpoint of a line segment" }
+    ],
+    "Geometry": [
+      { "name": "Area of Circle", "formula": "A = πr²", "description": "Area enclosed by a circle" },
+      { "name": "Circumference", "formula": "C = 2πr", "description": "Perimeter of a circle" },
+      { "name": "Area of Triangle", "formula": "A = ½ × b × h", "description": "Base times height divided by 2" },
+      { "name": "Pythagorean Theorem", "formula": "a² + b² = c²", "description": "Right triangle relationship" }
+    ],
+    "Trigonometry": [
+      { "name": "sin θ", "formula": "sin θ = Opposite / Hypotenuse", "description": "Sine ratio" },
+      { "name": "cos θ", "formula": "cos θ = Adjacent / Hypotenuse", "description": "Cosine ratio" },
+      { "name": "tan θ", "formula": "tan θ = Opposite / Adjacent", "description": "Tangent ratio" },
+      { "name": "sin²θ + cos²θ", "formula": "sin²θ + cos²θ = 1", "description": "Pythagorean identity" }
+    ],
+    "Mensuration": [
+      { "name": "Volume of Sphere", "formula": "V = (4/3)πr³", "description": "Volume of a sphere" },
+      { "name": "Surface Area of Sphere", "formula": "SA = 4πr²", "description": "Surface area of a sphere" },
+      { "name": "Volume of Cylinder", "formula": "V = πr²h", "description": "Volume of a cylinder" },
+      { "name": "Volume of Cone", "formula": "V = (1/3)πr²h", "description": "Volume of a cone" }
+    ]
+  },
+  "physics": {
+    "Motion": [
+      { "name": "Speed", "formula": "v = d/t", "description": "Distance over time" },
+      { "name": "Acceleration", "formula": "a = (v-u)/t", "description": "Change in velocity over time" },
+      { "name": "Newton's 2nd Law", "formula": "F = ma", "description": "Force equals mass times acceleration" },
+      { "name": "Kinematic Eq.", "formula": "v² = u² + 2as", "description": "Relates velocity, acceleration, displacement" }
+    ],
+    "Electricity": [
+      { "name": "Ohm's Law", "formula": "V = IR", "description": "Voltage = Current × Resistance" },
+      { "name": "Power", "formula": "P = VI", "description": "Electrical power" },
+      { "name": "Resistance", "formula": "R = ρL/A", "description": "Resistance of a conductor" }
+    ],
+    "Constants": [
+      { "name": "Speed of Light", "formula": "c = 3 × 10⁸ m/s", "description": "Speed of light in vacuum" },
+      { "name": "Gravity", "formula": "g = 9.8 m/s²", "description": "Acceleration due to gravity" },
+      { "name": "Planck's Constant", "formula": "h = 6.626 × 10⁻³⁴ J·s", "description": "Quantum of action" }
+    ]
+  },
+  "chemistry": {
+    "Laws": [
+      { "name": "Ideal Gas Law", "formula": "PV = nRT", "description": "Relates pressure, volume, temperature" },
+      { "name": "Avogadro's Number", "formula": "Nₐ = 6.022 × 10²³", "description": "Particles per mole" },
+      { "name": "Boyle's Law", "formula": "P₁V₁ = P₂V₂", "description": "Pressure-volume at constant temp" }
+    ],
+    "Reactions": [
+      { "name": "Molarity", "formula": "M = mol/L", "description": "Moles of solute per liter" },
+      { "name": "pH", "formula": "pH = -log[H⁺]", "description": "Measure of acidity" },
+      { "name": "Dilution", "formula": "M₁V₁ = M₂V₂", "description": "Dilution equation" }
+    ],
+    "Trends": [
+      { "name": "Electronegativity", "formula": "Increases → and ↑", "description": "Across period and up group" },
+      { "name": "Atomic Radius", "formula": "Increases ← and ↓", "description": "Opposite to electronegativity" },
+      { "name": "Ionization Energy", "formula": "Increases → and ↑", "description": "Energy to remove electron" }
+    ]
+  }
+}
