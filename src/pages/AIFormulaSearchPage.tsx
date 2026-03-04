@@ -5,8 +5,11 @@ import RewardedAdPlaceholder from "@/components/layout/RewardedAdPlaceholder";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { callAI, getRemainingUses, addBonusUses, getCachedResult, type TextResult } from "@/services/aiService";
+import { recordActivity } from "@/services/userService";
+import { useAuth } from "@/contexts/AuthContext";
 
 const AIFormulaSearchPage = () => {
+  const { user } = useAuth();
   const [query, setQuery] = useState("");
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -38,6 +41,13 @@ const AIFormulaSearchPage = () => {
     try {
       const data = await callAI<TextResult>("formula", query);
       setResult(data.text);
+
+      // Record Activity
+      await recordActivity(user?.id, {
+        title: "Formula Search",
+        details: query.slice(0, 30) + (query.length > 30 ? "..." : ""),
+        type: 'formula_searched'
+      });
     } catch (e: unknown) {
       toast.error(e instanceof Error ? e.message : "An error occurred");
     } finally {

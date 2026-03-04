@@ -20,122 +20,56 @@ import {
   ClipboardList,
   Sparkles,
   MessageSquare,
-  Search as SearchIcon
+  Search as SearchIcon,
+  Loader2
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  fetchUserActivity,
+  fetchUserStats,
+  getActivityIcon,
+  getActivityColor,
+  type UserActivity,
+  type UserStats
+} from "@/services/userService";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { user, session, isGuest } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [weeklyStats, setWeeklyStats] = useState({
-    focusHours: 24.5,
-    focusChange: 12,
-    cardsMastered: 1240,
-    cardsProgress: 84,
-    dailyTasksCompleted: 4,
+  const [loading, setLoading] = useState(true);
+  const [weeklyStats, setWeeklyStats] = useState<UserStats>({
+    focusHours: 0,
+    focusChange: 0,
+    cardsMastered: 0,
+    cardsProgress: 0,
+    dailyTasksCompleted: 0,
     dailyTasksTotal: 5
   });
-  const [recentActivity, setRecentActivity] = useState([
-    {
-      title: "Molecular Biology Flashcards",
-      time: "Generated 2 hours ago",
-      details: "45 cards",
-      icon: FileText,
-      color: "bg-blue-50 dark:bg-blue-500/10 text-blue-600"
-    },
-    {
-      title: "Advanced Calculus Problem #42",
-      time: "Solved 5 hours ago",
-      details: "Step-by-step active",
-      icon: HelpCircle,
-      color: "bg-orange-50 dark:bg-orange-500/10 text-orange-600"
-    },
-    {
-      title: "Ancient History Quiz (Rome)",
-      time: "Completed yesterday",
-      details: "Score: 92%",
-      icon: CheckCircle,
-      color: "bg-purple-50 dark:bg-purple-500/10 text-purple-600"
-    }
-  ]);
+  const [recentActivity, setRecentActivity] = useState<UserActivity[]>([]);
 
   // Fetch real user data on component mount
   useEffect(() => {
     const fetchUserData = async () => {
-      if (user && !isGuest) {
-        try {
-          // TODO: Create Supabase tables for user_activity and user_stats
-          // For now, using mock data but with real user context
-          console.log('User authenticated:', user.email);
-          
-          // Mock activity data based on real user actions would go here
-          const mockActivity = [
-            {
-              title: "Molecular Biology Flashcards",
-              time: "Generated 2 hours ago",
-              details: "45 cards",
-              icon: FileText,
-              color: "bg-blue-50 dark:bg-blue-500/10 text-blue-600"
-            },
-            {
-              title: "Advanced Calculus Problem #42",
-              time: "Solved 5 hours ago", 
-              details: "Step-by-step active",
-              icon: HelpCircle,
-              color: "bg-orange-50 dark:bg-orange-500/10 text-orange-600"
-            },
-            {
-              title: "Ancient History Quiz (Rome)",
-              time: "Completed yesterday",
-              details: "Score: 92%",
-              icon: CheckCircle,
-              color: "bg-purple-50 dark:bg-purple-500/10 text-purple-600"
-            }
-          ];
-          setRecentActivity(mockActivity);
+      setLoading(true);
+      try {
+        const stats = await fetchUserStats(user?.id);
+        setWeeklyStats(stats);
 
-          // Mock stats - in production this would come from Supabase
-          setWeeklyStats({
-            focusHours: 24.5,
-            focusChange: 12,
-            cardsMastered: 1240,
-            cardsProgress: 84,
-            dailyTasksCompleted: 4,
-            dailyTasksTotal: 5
-          });
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        }
-      } else {
-        // Guest mode - show default data
-        console.log('Guest mode active');
+        const activity = await fetchUserActivity(user?.id);
+        setRecentActivity(activity);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUserData();
-  }, [user, isGuest]);
-
-  const getActivityIcon = (activityType: string) => {
-    switch (activityType) {
-      case 'flashcards_generated': return FileText;
-      case 'problem_solved': return HelpCircle;
-      case 'quiz_completed': return CheckCircle;
-      default: return FileText;
-    }
-  };
-
-  const getActivityColor = (activityType: string) => {
-    switch (activityType) {
-      case 'flashcards_generated': return "bg-blue-50 dark:bg-blue-500/10 text-blue-600";
-      case 'problem_solved': return "bg-orange-50 dark:bg-orange-500/10 text-orange-600";
-      case 'quiz_completed': return "bg-purple-50 dark:bg-purple-500/10 text-purple-600";
-      default: return "bg-slate-50 dark:bg-slate-500/10 text-slate-600";
-    }
-  };
+  }, [user]);
 
   const quickTools = [
     {
@@ -246,7 +180,7 @@ const Dashboard = () => {
                 {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Student User'}
               </p>
               <p className="text-xs text-primary font-medium">
-                {isGuest ? 'Guest Mode' : 'Premium Plan'}
+                {isGuest ? 'Guest Mode' : 'Student Pro'}
               </p>
             </div>
           </div>
@@ -367,20 +301,35 @@ const Dashboard = () => {
                 </button>
               </div>
               <div className="divide-y divide-slate-100 dark:divide-slate-800">
-                {recentActivity.map((activity, index) => (
-                  <div key={index} className="p-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <div className={`size-10 rounded-lg ${activity.color} flex items-center justify-center shrink-0`}>
-                      <activity.icon className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-slate-900 dark:text-white">{activity.title}</p>
-                      <p className="text-xs text-slate-500">{activity.time} • {activity.details}</p>
-                    </div>
-                    <button className="p-2 text-slate-400 hover:text-primary">
-                      <MoreVertical className="w-4 h-4" />
-                    </button>
+                {loading ? (
+                  <div className="p-12 flex flex-col items-center justify-center text-slate-400">
+                    <Loader2 className="w-8 h-8 animate-spin mb-2" />
+                    <p className="text-sm">Loading activity...</p>
                   </div>
-                ))}
+                ) : recentActivity.length === 0 ? (
+                  <div className="p-12 text-center text-slate-400">
+                    <p className="text-sm italic">No recent activity found. Start learning to see your progress here!</p>
+                  </div>
+                ) : (
+                  recentActivity.map((activity, index) => {
+                    const Icon = getActivityIcon(activity.type);
+                    const colorClass = getActivityColor(activity.type);
+                    return (
+                      <div key={activity.id || index} className="p-4 flex items-center gap-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                        <div className={`size-10 rounded-lg ${colorClass} flex items-center justify-center shrink-0`}>
+                          <Icon className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white">{activity.title}</p>
+                          <p className="text-xs text-slate-500">{activity.time} • {activity.details}</p>
+                        </div>
+                        <button className="p-2 text-slate-400 hover:text-primary">
+                          <MoreVertical className="w-4 h-4" />
+                        </button>
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </div>
           </div>

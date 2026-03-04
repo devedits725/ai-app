@@ -5,8 +5,11 @@ import RewardedAdPlaceholder from "@/components/layout/RewardedAdPlaceholder";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { callAI, getRemainingUses, addBonusUses, getCachedResult, type FlashcardData } from "@/services/aiService";
+import { recordActivity, updateUserStats, fetchUserStats } from "@/services/userService";
+import { useAuth } from "@/contexts/AuthContext";
 
 const AIFlashcardsPage = () => {
+  const { user } = useAuth();
   const [topic, setTopic] = useState("");
   const [cards, setCards] = useState<{ front: string; back: string }[]>([]);
   const [loading, setLoading] = useState(false);
@@ -41,6 +44,21 @@ const AIFlashcardsPage = () => {
     try {
       const data = await callAI<FlashcardData>("flashcards", prompt);
       setCards(data.cards || []);
+
+      // Record Activity
+      await recordActivity(user?.id, {
+        title: `${topic} Flashcards`,
+        details: `${data.cards?.length || 0} cards generated`,
+        type: 'ai_flashcards'
+      });
+
+      // Update Stats
+      const stats = await fetchUserStats(user?.id);
+      await updateUserStats(user?.id, {
+        cardsMastered: stats.cardsMastered + (data.cards?.length || 0),
+        cardsProgress: Math.min(100, Math.floor(((stats.cardsMastered + (data.cards?.length || 0)) / 1500) * 100))
+      });
+
       // Save to localStorage for offline
       const saved = JSON.parse(localStorage.getItem("ai-flashcards-saved") || "{}");
       saved[topic] = data.cards;

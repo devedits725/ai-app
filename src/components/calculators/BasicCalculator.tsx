@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Delete } from "lucide-react";
+import { recordActivity } from "@/services/userService";
+import { useAuth } from "@/contexts/AuthContext";
 
 const BasicCalculator = () => {
+  const { user } = useAuth();
   const [display, setDisplay] = useState("0");
   const [history, setHistory] = useState<string[]>([]);
   const [prevVal, setPrevVal] = useState<number | null>(null);
@@ -35,11 +38,18 @@ const BasicCalculator = () => {
     if (prevVal === null || !op) return;
     const cur = parseFloat(display);
     const result = calc(prevVal, cur, op);
-    setHistory((h) => [...h.slice(-4), `${prevVal} ${op} ${cur} = ${result}`]);
+    const expression = `${prevVal} ${op} ${cur} = ${result}`;
+    setHistory((h) => [...h.slice(-4), expression]);
     setDisplay(String(result));
     setPrevVal(null);
     setOp(null);
     setFresh(true);
+
+    recordActivity(user?.id, {
+      title: "Calculator Used",
+      details: expression,
+      type: "calculator_used"
+    });
   };
 
   const calc = (a: number, b: number, o: string) => {

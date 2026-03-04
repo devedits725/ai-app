@@ -4,8 +4,11 @@ import PageHeader from "@/components/layout/PageHeader";
 import RewardedAdPlaceholder from "@/components/layout/RewardedAdPlaceholder";
 import { toast } from "sonner";
 import { callAI, getRemainingUses, addBonusUses, getCachedResult, type TextResult } from "@/services/aiService";
+import { recordActivity } from "@/services/userService";
+import { useAuth } from "@/contexts/AuthContext";
 
 const AIHelperPage = () => {
+  const { user } = useAuth();
   const [question, setQuestion] = useState("");
   const [result, setResult] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -37,6 +40,13 @@ const AIHelperPage = () => {
     try {
       const data = await callAI<TextResult>("explain", question);
       setResult(data.text);
+
+      // Record Activity
+      await recordActivity(user?.id, {
+        title: "AI Explanation",
+        details: question.slice(0, 30) + (question.length > 30 ? "..." : ""),
+        type: 'ai_helper'
+      });
     } catch (e: unknown) {
       toast.error(e instanceof Error ? e.message : "An error occurred");
     } finally {
