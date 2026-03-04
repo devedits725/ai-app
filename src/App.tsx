@@ -10,6 +10,7 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 import { lazy, Suspense } from "react";
 import Index from "./pages/Index";
+import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
 const AuthPage = lazy(() => import("./pages/AuthPage"));
@@ -53,7 +54,7 @@ const App = () => (
                       <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} /> */}
 
                       {/* Routes without authentication for development */}
-                      <Route path="/" element={<Index />} />
+                      <Route path="/" element={<Dashboard />} />
                       <Route path="/calculator" element={<CalculatorPage />} />
                       <Route path="/formulas" element={<FormulasPage />} />
                       <Route path="/converter" element={<ConverterPage />} />
@@ -68,7 +69,7 @@ const App = () => (
                       <Route path="/privacy" element={<PrivacyPolicyPage />} />
                       
                       {/* Original protected routes (commented for development) */}
-                      {/* <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+                      {/* <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                       <Route path="/calculator" element={<ProtectedRoute><CalculatorPage /></ProtectedRoute>} />
                       <Route path="/formulas" element={<ProtectedRoute><FormulasPage /></ProtectedRoute>} />
                       <Route path="/converter" element={<ProtectedRoute><ConverterPage /></ProtectedRoute>} />

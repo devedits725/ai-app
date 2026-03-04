@@ -51,11 +51,16 @@ export default {
         "ai-glow": "hsl(var(--ai-glow))",
         success: "hsl(var(--success))",
         warning: "hsl(var(--warning))",
+        "background-light": "#f5f5f8",
+        "background-dark": "#101022",
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        "display": ["Inter", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
