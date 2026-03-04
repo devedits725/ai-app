@@ -49,31 +49,11 @@ const App = () => (
                 <div className="flex flex-col min-h-screen relative">
                   <div className="flex-1">
                     <Routes>
-                      {/* Temporarily commented out for development */}
-                      {/* <Route path="/auth" element={<AuthPage />} />
-                      <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} /> */}
-
-                      {/* Routes without authentication for development */}
-                      <Route path="/" element={<Dashboard />} />
-                      <Route path="/calculator" element={<CalculatorPage />} />
-                      <Route path="/formulas" element={<FormulasPage />} />
-                      <Route path="/converter" element={<ConverterPage />} />
-                      <Route path="/flashcards" element={<FlashcardsPage />} />
-                      <Route path="/quiz" element={<QuizPage />} />
-                      <Route path="/settings" element={<SettingsPage />} />
-                      <Route path="/ai-helper" element={<AIHelperPage />} />
-                      <Route path="/ai-flashcards" element={<AIFlashcardsPage />} />
-                      <Route path="/ai-quiz" element={<AIQuizPage />} />
-                      <Route path="/ai-formula-search" element={<AIFormulaSearchPage />} />
-                      <Route path="/credits" element={<CreditsPage />} />
-                      <Route path="/privacy" element={<PrivacyPolicyPage />} />
-                      
-                      {/* Auth routes */}
                       <Route path="/auth" element={<AuthPage />} />
-                      <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} />
                       
-                      {/* Original protected routes (commented for development) */}
-                      {/* <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                      {/* Protected Routes */}
+                      <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                      <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} />
                       <Route path="/calculator" element={<ProtectedRoute><CalculatorPage /></ProtectedRoute>} />
                       <Route path="/formulas" element={<ProtectedRoute><FormulasPage /></ProtectedRoute>} />
                       <Route path="/converter" element={<ProtectedRoute><ConverterPage /></ProtectedRoute>} />
@@ -85,7 +65,7 @@ const App = () => (
                       <Route path="/ai-quiz" element={<ProtectedRoute><AIQuizPage /></ProtectedRoute>} />
                       <Route path="/ai-formula-search" element={<ProtectedRoute><AIFormulaSearchPage /></ProtectedRoute>} />
                       <Route path="/credits" element={<ProtectedRoute><CreditsPage /></ProtectedRoute>} />
-                      <Route path="/privacy" element={<ProtectedRoute><PrivacyPolicyPage /></ProtectedRoute>} /> */}
+                      <Route path="/privacy" element={<ProtectedRoute><PrivacyPolicyPage /></ProtectedRoute>} />
                       
                       <Route path="*" element={<NotFound />} />
                     </Routes>

@@ -6,8 +6,11 @@ import InterstitialAdPlaceholder from "@/components/layout/InterstitialAdPlaceho
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { callAI, getRemainingUses, addBonusUses, getCachedResult, type QuizData } from "@/services/aiService";
+import { recordActivity, updateUserStats, fetchUserStats } from "@/services/userService";
+import { useAuth } from "@/contexts/AuthContext";
 
 const AIQuizPage = () => {
+  const { user } = useAuth();
   const [topic, setTopic] = useState("");
   const [loading, setLoading] = useState(false);
   const [showAd, setShowAd] = useState(false);
@@ -61,10 +64,24 @@ const AIQuizPage = () => {
     if (idx === questions[current]?.answer) setScore((s) => s + 1);
   };
 
-  const next = () => {
+  const next = async () => {
     if (current + 1 >= questions.length) {
       setFinished(true);
       setShowInterstitial(true);
+
+      // Record Activity
+      await recordActivity(user?.id, {
+        title: `${topic} Quiz`,
+        details: `Scored ${score + (selected === questions[current]?.answer ? 1 : 0)}/${questions.length}`,
+        type: 'ai_quiz'
+      });
+
+      // Update Stats
+      const currentStats = await fetchUserStats(user?.id);
+      await updateUserStats(user?.id, {
+        dailyTasksCompleted: Math.min(currentStats.dailyTasksTotal, currentStats.dailyTasksCompleted + 1)
+      });
+
       return;
     }
     setCurrent((c) => c + 1);
