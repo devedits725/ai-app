@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
-const DAILY_LIMIT = 15;
+const DAILY_LIMIT = 7;
 const CACHE_PREFIX = "ai-cache-";
 const COUNTER_KEY = "ai-daily-counter";
 

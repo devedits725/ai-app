@@ -60,31 +60,38 @@ const BasicCalculator = () => {
     return b;
   };
 
-  const btn = "flex items-center justify-center rounded-xl text-lg font-medium h-14 active:scale-95 transition-all";
+  const btn = "flex items-center justify-center rounded-2xl text-xl font-bold h-16 active:scale-95 transition-all shadow-sm";
 
   return (
-    <div className="space-y-3">
-      {history.length > 0 && (
-        <div className="text-xs text-muted-foreground space-y-0.5 max-h-16 overflow-y-auto">
-          {history.map((h, i) => <p key={i}>{h}</p>)}
+    <div className="max-w-md mx-auto space-y-6">
+      <div className="space-y-2">
+        <div className="h-12 overflow-y-auto text-right px-4 space-y-1">
+          {history.map((h, i) => (
+            <p key={i} className="text-sm font-medium text-slate-400 dark:text-slate-500">{h}</p>
+          ))}
         </div>
-      )}
-      <div className="bg-card border border-border rounded-2xl p-4 text-right text-3xl font-mono font-bold truncate">
-        {display}
+        <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 rounded-3xl p-8 text-right text-5xl font-black tracking-tight text-slate-900 dark:text-white truncate">
+          {display}
+        </div>
       </div>
-      <div className="grid grid-cols-4 gap-2">
-        <button onClick={clear} className={`${btn} bg-destructive/10 text-destructive`}>C</button>
-        <button onClick={() => setDisplay((d) => d.slice(0, -1) || "0")} className={`${btn} bg-secondary`}><Delete className="w-5 h-5" /></button>
-        <button onClick={() => operate("÷")} className={`${btn} bg-primary/10 text-primary`}>÷</button>
-        <button onClick={() => operate("×")} className={`${btn} bg-primary/10 text-primary`}>×</button>
-        {["7","8","9"].map(n => <button key={n} onClick={() => input(n)} className={`${btn} bg-secondary`}>{n}</button>)}
-        <button onClick={() => operate("-")} className={`${btn} bg-primary/10 text-primary`}>−</button>
-        {["4","5","6"].map(n => <button key={n} onClick={() => input(n)} className={`${btn} bg-secondary`}>{n}</button>)}
-        <button onClick={() => operate("+")} className={`${btn} bg-primary/10 text-primary`}>+</button>
-        {["1","2","3"].map(n => <button key={n} onClick={() => input(n)} className={`${btn} bg-secondary`}>{n}</button>)}
-        <button onClick={equals} className={`${btn} bg-primary text-primary-foreground row-span-2`}>=</button>
-        <button onClick={() => input("0")} className={`${btn} bg-secondary col-span-2`}>0</button>
-        <button onClick={decimal} className={`${btn} bg-secondary`}>.</button>
+
+      <div className="grid grid-cols-4 gap-3">
+        <button onClick={clear} className={`${btn} bg-red-50 dark:bg-red-500/10 text-red-500 hover:bg-red-100`}>AC</button>
+        <button onClick={() => setDisplay((d) => d.slice(0, -1) || "0")} className={`${btn} bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200`}><Delete className="w-6 h-6" /></button>
+        <button onClick={() => operate("÷")} className={`${btn} bg-primary/10 text-primary hover:bg-primary/20 text-2xl`}>÷</button>
+        <button onClick={() => operate("×")} className={`${btn} bg-primary/10 text-primary hover:bg-primary/20 text-2xl`}>×</button>
+
+        {["7","8","9"].map(n => <button key={n} onClick={() => input(n)} className={`${btn} bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-primary`}>{n}</button>)}
+        <button onClick={() => operate("-")} className={`${btn} bg-primary/10 text-primary hover:bg-primary/20 text-2xl`}>−</button>
+
+        {["4","5","6"].map(n => <button key={n} onClick={() => input(n)} className={`${btn} bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-primary`}>{n}</button>)}
+        <button onClick={() => operate("+")} className={`${btn} bg-primary/10 text-primary hover:bg-primary/20 text-2xl`}>+</button>
+
+        {["1","2","3"].map(n => <button key={n} onClick={() => input(n)} className={`${btn} bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-primary`}>{n}</button>)}
+        <button onClick={equals} className={`${btn} bg-primary text-white shadow-lg shadow-primary/30 row-span-2 h-full text-2xl`}>=</button>
+
+        <button onClick={() => input("0")} className={`${btn} bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-primary col-span-2`}>0</button>
+        <button onClick={decimal} className={`${btn} bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-primary`}>.</button>
       </div>
     </div>
   );
