@@ -5,8 +5,7 @@ import {
   Layers,
   ClipboardList,
   ArrowLeftRight,
-  Calculator,
-  LayoutDashboard
+  Calculator
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
@@ -16,11 +15,6 @@ export const Sidebar = () => {
   const { user, isGuest } = useAuth();
 
   const navItems = [
-    {
-      title: "Dashboard",
-      path: "/dashboard",
-      icon: LayoutDashboard,
-    },
     {
       title: "Homework Helper",
       path: "/ai-helper",
