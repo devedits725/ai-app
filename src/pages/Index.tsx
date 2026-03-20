@@ -5,26 +5,23 @@ import {
   BookOpen, 
   ArrowLeftRight, 
   Brain, 
-  ClipboardList, 
   Sparkles, 
   MessageSquare, 
-  Layers, 
   Search, 
   Menu,
-  BarChart3,
-  Calendar,
   Settings,
   LogOut,
-  // Icons below are used by the sidebar avatar/nav and the module grid.
+  Bookmark,
+  Home,
+  Wrench
 } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
 
 const modules = [
   { title: "Calculator Tools", subtitle: "Math made easy", icon: Calculator, path: "/calculator", color: "bg-blue-500/10 text-blue-600 dark:text-blue-400" },
   { title: "Formula Sheets", subtitle: "Quick reference", icon: BookOpen, path: "/formulas", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" },
   { title: "Unit Converter", subtitle: "Instant convert", icon: ArrowLeftRight, path: "/converter", color: "bg-orange-500/10 text-orange-600 dark:text-orange-400" },
-  { title: "Flashcards", subtitle: "Study & revise", icon: Layers, path: "/flashcards", color: "bg-pink-500/10 text-pink-600 dark:text-pink-400" },
-  { title: "Practice Quiz", subtitle: "Test yourself", icon: ClipboardList, path: "/quiz", color: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400" },
   { title: "AI Homework Helper", subtitle: "Step-by-step help", icon: MessageSquare, path: "/ai-helper", color: "bg-purple-500/10 text-purple-500", ai: true },
   { title: "AI Flashcard Gen", subtitle: "Generate cards", icon: Sparkles, path: "/ai-flashcards", color: "bg-violet-500/10 text-violet-500", ai: true },
   { title: "AI Quiz Gen", subtitle: "Custom quizzes", icon: Brain, path: "/ai-quiz", color: "bg-fuchsia-500/10 text-fuchsia-500", ai: true },
@@ -33,6 +30,7 @@ const modules = [
 
 const Index = () => {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const { user, session, isGuest, signOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -47,17 +45,12 @@ const Index = () => {
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
         className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-card border border-border"
-        aria-label="Open menu"
       >
         <Menu className="w-5 h-5" />
       </button>
 
-      {/* Sidebar Navigation (matches Dashboard sidebar layout/behavior) */}
-      <aside
-        className={`w-64 border-r border-border bg-card flex flex-col fixed h-full z-40 transform transition-transform lg:translate-x-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
+      {/* Sidebar Navigation */}
+      <aside className={`w-64 border-r border-border bg-card hidden lg:flex flex-col fixed h-full z-40 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
         <div className="p-6">
           <div className="flex items-center gap-3 mb-8">
             <div className="bg-primary size-10 rounded-lg flex items-center justify-center text-primary-foreground">
@@ -65,42 +58,39 @@ const Index = () => {
             </div>
             <h1 className="text-xl font-bold tracking-tight text-foreground">Student Toolkit</h1>
           </div>
-
           <nav className="space-y-1">
-            <button
+            <button 
               onClick={() => navigate("/")}
               className="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary font-medium w-full text-left"
             >
-              <BarChart3 className="w-5 h-5" />
+              <Home className="w-5 h-5" />
               Home
             </button>
-
-            <button
-              onClick={() => navigate("/formulas")}
+            <button 
+              onClick={() => navigate("/")}
               className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors w-full text-left"
             >
-              <BookOpen className="w-5 h-5" />
-              My Library
+              <Wrench className="w-5 h-5" />
+              Tools
             </button>
-
-            <button
-              onClick={() => navigate("/quiz")}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors w-full text-left"
-            >
-              <Calendar className="w-5 h-5" />
-              Study Plans
-            </button>
-
-            <button
+            {session && !isGuest && (
+              <button 
+                onClick={() => navigate("/saved")}
+                className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors w-full text-left"
+              >
+                <Bookmark className="w-5 h-5" />
+                Saved Items
+              </button>
+            )}
+            <button 
               onClick={() => navigate("/settings")}
               className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors w-full text-left"
             >
               <Settings className="w-5 h-5" />
               Settings
             </button>
-
             {session && !isGuest && (
-              <button
+              <button 
                 onClick={handleSignOut}
                 className="flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full text-left"
               >
@@ -110,36 +100,31 @@ const Index = () => {
             )}
           </nav>
         </div>
-
         <div className="mt-auto p-4 m-4 rounded-xl bg-muted/50 border border-border">
           <div className="flex items-center gap-3">
             <div className="size-10 rounded-full bg-muted overflow-hidden">
               {user?.user_metadata?.avatar_url ? (
-                <img
-                  src={user.user_metadata.avatar_url}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
+                <img src={user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
-                  {user?.email?.charAt(0).toUpperCase() || "U"}
+                  {user?.email?.charAt(0).toUpperCase() || 'U'}
                 </div>
               )}
             </div>
             <div className="overflow-hidden">
               <p className="text-sm font-semibold truncate">
-                {user?.user_metadata?.full_name ||
-                  user?.email?.split("@")[0] ||
-                  "Student"}
+                {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Student'}
               </p>
-              <p className="text-xs text-muted-foreground">{isGuest ? "Guest Mode" : "Logged In"}</p>
+              <p className="text-xs text-muted-foreground">
+                {isGuest ? 'Guest Mode' : 'Logged In'}
+              </p>
             </div>
           </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 ml-0 lg:ml-64 min-h-screen">
+      <main className="flex-1 lg:ml-64 min-h-screen">
         <div className="p-6 lg:p-8">
           {/* Header */}
           <header className="mb-8">

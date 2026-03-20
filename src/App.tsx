@@ -26,6 +26,7 @@ const AIQuizPage = lazy(() => import("./pages/AIQuizPage"));
 const AIFormulaSearchPage = lazy(() => import("./pages/AIFormulaSearchPage"));
 const CreditsPage = lazy(() => import("./pages/CreditsPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
+const SavedPage = lazy(() => import("./pages/SavedPage"));
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,7 @@ const App = () => (
 
                       {/* Protected routes (guest mode is allowed) */}
                       <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+                      <Route path="/saved" element={<ProtectedRoute><SavedPage /></ProtectedRoute>} />
                       <Route path="/calculator" element={<ProtectedRoute><CalculatorPage /></ProtectedRoute>} />
                       <Route path="/formulas" element={<ProtectedRoute><FormulasPage /></ProtectedRoute>} />
                       <Route path="/converter" element={<ProtectedRoute><ConverterPage /></ProtectedRoute>} />

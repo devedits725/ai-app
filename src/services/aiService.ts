@@ -83,8 +83,53 @@ export async function callAI<T = unknown>(type: AIType, prompt: string): Promise
     throw new Error("Daily AI limit reached. Come back tomorrow for more!");
   }
 
+  // Enhanced prompt engineering for better results
+  let enhancedPrompt = prompt;
+  
+  switch (type) {
+    case "explain":
+      enhancedPrompt = `As an expert tutor, provide a clear, step-by-step explanation for: ${prompt}. 
+      Include:
+      - A simple explanation
+      - Step-by-step breakdown
+      - Key concepts or formulas
+      - A practical example
+      Format in a way that's easy to read and understand.`;
+      break;
+      
+    case "flashcards":
+      enhancedPrompt = `Create comprehensive flashcards for: ${prompt}. 
+      Generate 10-15 high-quality flashcards with:
+      - Clear, concise front questions
+      - Detailed back answers
+      - Cover key concepts, definitions, and examples
+      Format as JSON: { cards: [{ front: "...", back: "..." }] }`;
+      break;
+      
+    case "quiz":
+      enhancedPrompt = `Generate a comprehensive quiz on: ${prompt}. 
+      Create 10 multiple-choice questions with:
+      - Clear questions
+      - 4 plausible options (A, B, C, D)
+      - Correct answer number
+      - Detailed explanations
+      Format as JSON: { questions: [{ question: "...", options: [...], answer: 0, explanation: "..." }] }`;
+      break;
+      
+    case "formula":
+      enhancedPrompt = `As a mathematics and science expert, provide detailed information about: ${prompt}. 
+      Include:
+      - The formula itself
+      - What each variable represents
+      - Units of measurement
+      - When to use it
+      - A worked example
+      Format clearly with proper mathematical notation.`;
+      break;
+  }
+
   const { data, error } = await supabase.functions.invoke("ai-study", {
-    body: { type, prompt },
+    body: { type, prompt: enhancedPrompt },
   });
 
   if (error) {
