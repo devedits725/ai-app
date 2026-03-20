@@ -10,7 +10,6 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import BannerAdPlaceholder from "@/components/layout/BannerAdPlaceholder";
 import { lazy, Suspense } from "react";
 import Index from "./pages/Index";
-import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
 const AuthPage = lazy(() => import("./pages/AuthPage"));
@@ -49,12 +48,12 @@ const App = () => (
                 <div className="flex flex-col min-h-screen relative">
                   <div className="flex-1">
                     <Routes>
-                      <Route path="/auth" element={<AuthPage />} />
-                      
-                      {/* Protected Routes */}
+                      {/* Temporarily commented out for development */}
+                      {/* <Route path="/auth" element={<AuthPage />} />
+                      <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} /> */}
+
+                      {/* Protected routes (guest mode is allowed) */}
                       <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-                      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-                      <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} />
                       <Route path="/calculator" element={<ProtectedRoute><CalculatorPage /></ProtectedRoute>} />
                       <Route path="/formulas" element={<ProtectedRoute><FormulasPage /></ProtectedRoute>} />
                       <Route path="/converter" element={<ProtectedRoute><ConverterPage /></ProtectedRoute>} />
@@ -67,6 +66,25 @@ const App = () => (
                       <Route path="/ai-formula-search" element={<ProtectedRoute><AIFormulaSearchPage /></ProtectedRoute>} />
                       <Route path="/credits" element={<ProtectedRoute><CreditsPage /></ProtectedRoute>} />
                       <Route path="/privacy" element={<ProtectedRoute><PrivacyPolicyPage /></ProtectedRoute>} />
+                      
+                      {/* Auth routes */}
+                      <Route path="/auth" element={<AuthPage />} />
+                      <Route path="/profile-setup" element={<ProtectedRoute><ProfileSetupPage /></ProtectedRoute>} />
+                      
+                      {/* Original protected routes (commented for development) */}
+                      {/* <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+                      <Route path="/calculator" element={<ProtectedRoute><CalculatorPage /></ProtectedRoute>} />
+                      <Route path="/formulas" element={<ProtectedRoute><FormulasPage /></ProtectedRoute>} />
+                      <Route path="/converter" element={<ProtectedRoute><ConverterPage /></ProtectedRoute>} />
+                      <Route path="/flashcards" element={<ProtectedRoute><FlashcardsPage /></ProtectedRoute>} />
+                      <Route path="/quiz" element={<ProtectedRoute><QuizPage /></ProtectedRoute>} />
+                      <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+                      <Route path="/ai-helper" element={<ProtectedRoute><AIHelperPage /></ProtectedRoute>} />
+                      <Route path="/ai-flashcards" element={<ProtectedRoute><AIFlashcardsPage /></ProtectedRoute>} />
+                      <Route path="/ai-quiz" element={<ProtectedRoute><AIQuizPage /></ProtectedRoute>} />
+                      <Route path="/ai-formula-search" element={<ProtectedRoute><AIFormulaSearchPage /></ProtectedRoute>} />
+                      <Route path="/credits" element={<ProtectedRoute><CreditsPage /></ProtectedRoute>} />
+                      <Route path="/privacy" element={<ProtectedRoute><PrivacyPolicyPage /></ProtectedRoute>} /> */}
                       
                       <Route path="*" element={<NotFound />} />
                     </Routes>
