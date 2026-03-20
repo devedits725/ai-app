@@ -2,13 +2,7 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/index.html",
-      "has": [
-        {
-          "type": "header",
-          "key": "x-prerender-revalidate"
-        }
-      ]
+      "destination": "/index.html"
     }
   ]
 }
