@@ -13,7 +13,10 @@ import {
   LogOut,
   Bookmark,
   Home,
-  Wrench
+  Wrench,
+  FileText,
+  Bug,
+  Globe
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,6 +29,9 @@ const modules = [
   { title: "AI Flashcard Gen", subtitle: "Generate cards", icon: Sparkles, path: "/ai-flashcards", color: "bg-violet-500/10 text-violet-500", ai: true },
   { title: "AI Quiz Gen", subtitle: "Custom quizzes", icon: Brain, path: "/ai-quiz", color: "bg-fuchsia-500/10 text-fuchsia-500", ai: true },
   { title: "Smart Formula Search", subtitle: "Ask in plain English", icon: Search, path: "/ai-formula-search", color: "bg-indigo-500/10 text-indigo-500", ai: true },
+  { title: "Essay Writer", subtitle: "Generate structured essays", icon: FileText, path: "/essay-writer", color: "bg-pink-500/10 text-pink-600 dark:text-pink-400", ai: true },
+  { title: "Code Debugger", subtitle: "Analyze and debug code", icon: Bug, path: "/code-debugger", color: "bg-red-500/10 text-red-600 dark:text-red-400", ai: true },
+  { title: "Study Resources", subtitle: "Curated learning materials", icon: Globe, path: "/study-resources", color: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400" },
 ];
 
 const Index = () => {

@@ -27,6 +27,9 @@ const AIFormulaSearchPage = lazy(() => import("./pages/AIFormulaSearchPage"));
 const CreditsPage = lazy(() => import("./pages/CreditsPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
 const SavedPage = lazy(() => import("./pages/SavedPage"));
+const EssayWriterPage = lazy(() => import("./pages/EssayWriterPage"));
+const CodeDebuggerPage = lazy(() => import("./pages/CodeDebuggerPage"));
+const StudyResourcesPage = lazy(() => import("./pages/StudyResourcesPage"));
 
 const queryClient = new QueryClient();
 
@@ -66,6 +69,9 @@ const App = () => (
                       <Route path="/ai-flashcards" element={<ProtectedRoute><AIFlashcardsPage /></ProtectedRoute>} />
                       <Route path="/ai-quiz" element={<ProtectedRoute><AIQuizPage /></ProtectedRoute>} />
                       <Route path="/ai-formula-search" element={<ProtectedRoute><AIFormulaSearchPage /></ProtectedRoute>} />
+                      <Route path="/essay-writer" element={<ProtectedRoute><EssayWriterPage /></ProtectedRoute>} />
+                      <Route path="/code-debugger" element={<ProtectedRoute><CodeDebuggerPage /></ProtectedRoute>} />
+                      <Route path="/study-resources" element={<ProtectedRoute><StudyResourcesPage /></ProtectedRoute>} />
                       <Route path="/credits" element={<ProtectedRoute><CreditsPage /></ProtectedRoute>} />
                       <Route path="/privacy" element={<ProtectedRoute><PrivacyPolicyPage /></ProtectedRoute>} />
                       

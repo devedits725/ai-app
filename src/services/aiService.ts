@@ -64,7 +64,7 @@ function setCachedResult(type: string, prompt: string, data: unknown): void {
   } catch { /* storage full, ignore */ }
 }
 
-export type AIType = "explain" | "flashcards" | "quiz" | "formula";
+export type AIType = "explain" | "flashcards" | "quiz" | "formula" | "essay" | "debug";
 
 export async function callAI<T = unknown>(type: AIType, prompt: string): Promise<T> {
   // Check offline
@@ -125,6 +125,28 @@ export async function callAI<T = unknown>(type: AIType, prompt: string): Promise
       - When to use it
       - A worked example
       Format clearly with proper mathematical notation.`;
+      break;
+      
+    case "essay":
+      enhancedPrompt = `As an expert academic writer, create a well-structured essay based on: ${prompt}. 
+      The essay should include:
+      - Clear introduction with thesis statement
+      - Well-organized body paragraphs with topic sentences
+      - Proper transitions between paragraphs
+      - Strong conclusion that summarizes key points
+      - Proper formatting with paragraphs
+      Write in an academic style that is clear and engaging.`;
+      break;
+      
+    case "debug":
+      enhancedPrompt = `As an expert software developer and debugger, analyze the following code: ${prompt}. 
+      Provide:
+      - Identification of any errors or bugs
+      - Line-by-line analysis of issues
+      - Corrected code with fixes
+      - Explanation of what was wrong and why
+      - Best practices recommendations
+      Format the response clearly with sections for errors, corrections, and explanations.`;
       break;
   }
 
