@@ -4,16 +4,12 @@ import {
   BookOpen,
   ExternalLink,
   Search,
-  Menu,
-  Settings,
-  LogOut,
-  Bookmark,
-  Home,
   Globe,
   Filter
 } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
+import Sidebar from "@/components/layout/Sidebar";
 
 interface StudyResource {
   id: string;
@@ -163,15 +159,8 @@ const categoryIcons = {
 const StudyResourcesPage = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { user, session, isGuest, signOut } = useAuth();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/auth');
-  };
 
   const filteredResources = studyResources.filter(resource => {
     const matchesSearch = resource.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -186,93 +175,97 @@ const StudyResourcesPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-card border border-border"
-      >
-        <Menu className="w-5 h-5" />
-      </button>
-
-      {/* Sidebar Navigation */}
-      <aside className={`w-64 border-r border-border bg-card hidden lg:flex flex-col fixed h-full z-40 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
-        <div className="p-6">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="bg-primary size-10 rounded-lg flex items-center justify-center text-primary-foreground">
-              <BookOpen className="w-5 h-5" />
-            </div>
-            <h1 className="text-xl font-bold tracking-tight text-foreground">Student Toolkit</h1>
-          </div>
-          <nav className="space-y-1">
-            <button 
-              onClick={() => navigate("/")}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors w-full text-left"
-            >
-              <Home className="w-5 h-5" />
-              Home
-            </button>
-            {session && !isGuest && (
-              <button 
-                onClick={() => navigate("/saved")}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors w-full text-left"
-              >
-                <Bookmark className="w-5 h-5" />
-                Saved Items
-              </button>
-            )}
-            <button 
-              onClick={() => navigate("/settings")}
-              className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors w-full text-left"
-            >
-              <Settings className="w-5 h-5" />
-              Settings
-            </button>
-            {session && !isGuest && (
-              <button 
-                onClick={handleSignOut}
-                className="flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full text-left"
-              >
-                <LogOut className="w-5 h-5" />
-                Sign Out
-              </button>
-            )}
-          </nav>
+    <Sidebar title="Study Resources" icon={<BookOpen />}>
+      <div className="p-6">
+        {/* Beta Badge */}
+        <div className="mb-6">
+          <span className="inline-flex items-center px-3 py-1 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-sm font-bold">
+            🚀 Beta
+          </span>
         </div>
-        <div className="mt-auto p-4 m-4 rounded-xl bg-muted/50 border border-border">
-          <div className="flex items-center gap-3">
-            <div className="size-10 rounded-full bg-muted overflow-hidden">
-              {user?.user_metadata?.avatar_url ? (
-                <img src={user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
-                  {user?.email?.charAt(0).toUpperCase() || 'U'}
-                </div>
-              )}
-            </div>
-            <div className="overflow-hidden">
-              <p className="text-sm font-semibold truncate">
-                {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Student'}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {isGuest ? 'Guest Mode' : 'Logged In'}
-              </p>
+
+        {/* Header */}
+        <header className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl lg:text-3xl font-bold text-foreground">Study Resources Hub</h1>
+              <p className="text-muted-foreground mt-1">Curated educational websites and tools for learning.</p>
             </div>
           </div>
-        </div>
-      </aside>
+        </header>
 
-      {/* Main Content */}
-      <main className="flex-1 lg:ml-64 min-h-screen">
-        <div className="p-6 lg:p-8">
-          {/* Header */}
-          <header className="mb-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <h1 className="text-2xl lg:text-3xl font-bold text-foreground">Study Resources Hub</h1>
-                  <span className="px-2 py-1 bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 text-xs font-bold rounded-full">
-                    BETA
+        {/* Search and Filter */}
+        <div className="mb-8 space-y-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Search resources..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-muted/50 focus:ring-primary focus:border-primary/20 text-foreground placeholder:text-muted-foreground outline-none"
+            />
+          </div>
+          
+          <div className="flex gap-2 flex-wrap">
+            <button
+              onClick={() => setSelectedCategory("all")}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                selectedCategory === "all"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              }`}
+            >
+              All Resources
+            </button>
+            <button
+              onClick={() => setSelectedCategory("concepts")}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                selectedCategory === "concepts"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              }`}
+            >
+              Concepts
+            </button>
+            <button
+              onClick={() => setSelectedCategory("notes")}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                selectedCategory === "notes"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              }`}
+            >
+              Notes
+            </button>
+            <button
+              onClick={() => setSelectedCategory("practice")}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                selectedCategory === "practice"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              }`}
+            >
+              Practice
+            </button>
+          </div>
+        </div>
+
+        {/* Resources Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredResources.map((resource) => {
+            const IconComponent = categoryIcons[resource.category];
+            return (
+              <div
+                key={resource.id}
+                className="bg-card rounded-2xl shadow-sm border border-border p-6 hover:shadow-md transition-all hover:border-primary/20"
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className="p-3 rounded-lg bg-primary/10 text-primary">
+                    <IconComponent className="w-6 h-6" />
+                  </div>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${categoryColors[resource.category]}`}>
+                    {resource.category}
                   </span>
                 </div>
                 <p className="text-muted-foreground mt-1">Curated study materials and learning platforms.</p>
