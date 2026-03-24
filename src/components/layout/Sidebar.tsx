@@ -1,101 +1,117 @@
-import { Link, useLocation } from "react-router-dom";
-import {
-  Book,
-  Edit3,
-  Layers,
-  ClipboardList,
-  ArrowLeftRight,
-  Calculator
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { 
+  Menu,
+  Settings,
+  LogOut,
+  Bookmark,
+  Home,
+  Wrench
 } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { cn } from "@/lib/utils";
 
-export const Sidebar = () => {
-  const location = useLocation();
-  const { user, isGuest } = useAuth();
+interface SidebarProps {
+  children: React.ReactNode;
+  icon?: React.ReactNode;
+  title?: string;
+}
 
-  const navItems = [
-    {
-      title: "Homework Helper",
-      path: "/ai-helper",
-      icon: Edit3,
-    },
-    {
-      title: "Flashcard Generator",
-      path: "/ai-flashcards",
-      icon: Layers,
-    },
-    {
-      title: "Quiz Generator",
-      path: "/ai-quiz",
-      icon: ClipboardList,
-    },
-    {
-      title: "Unit Converter",
-      path: "/converter",
-      icon: ArrowLeftRight,
-    },
-    {
-      title: "Calculator",
-      path: "/calculator",
-      icon: Calculator,
-    },
-  ];
+const Sidebar = ({ children, icon, title }: SidebarProps) => {
+  const { user, session, isGuest, signOut } = useAuth();
+  const navigate = useNavigate();
+  const { theme } = useTheme();
+  const [sidebarOpen, setSidebarOpen] = React.useState(false);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
 
   return (
-    <aside className="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col h-full shrink-0">
-      <div className="p-6 flex items-center gap-3">
-        <div className="size-10 bg-primary rounded-xl flex items-center justify-center text-white shrink-0">
-          <Book className="w-6 h-6" />
-        </div>
-        <div className="flex flex-col overflow-hidden">
-          <h1 className="text-slate-900 dark:text-white text-lg font-bold leading-none truncate">StudentPro</h1>
-          <p className="text-slate-500 dark:text-slate-400 text-xs font-medium truncate">Your Assistant</p>
+    <aside className={`w-64 border-r border-border bg-card hidden lg:flex flex-col fixed h-full z-40 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
+      <div className="p-6">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="bg-primary size-10 rounded-lg flex items-center justify-center text-primary-foreground">
+            {icon || <Wrench className="w-5 h-5" />}
+          </div>
+          <h1 className="text-xl font-bold tracking-tight text-foreground">Student Toolkit</h1>
         </div>
       </div>
-
-      <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto custom-scrollbar">
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors",
-                isActive
-                  ? "bg-primary/10 text-primary font-semibold"
-                  : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
-              )}
-            >
-              <item.icon className="w-5 h-5" />
-              <span className="text-sm font-medium">{item.title}</span>
-            </Link>
-          );
-        })}
+      <nav className="space-y-1">
+        <button 
+          onClick={() => navigate("/")}
+          className="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary font-medium w-full text-left"
+        >
+          <Home className="w-5 h-5" />
+          Home
+        </button>
+        {session && !isGuest && (
+          <button 
+            onClick={() => navigate("/saved")}
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors w-full text-left"
+          >
+            <Bookmark className="w-5 h-5" />
+            Saved Items
+          </button>
+        )}
+        <button 
+          onClick={() => navigate("/settings")}
+          className="flex items-center gap-3 px-3 py-2 rounded-lg text-muted-foreground hover:bg-muted transition-colors w-full text-left"
+        >
+          <Settings className="w-5 h-5" />
+          Settings
+        </button>
+        {session && !isGuest && (
+          <button 
+            onClick={handleSignOut}
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full text-left"
+          >
+            <LogOut className="w-5 h-5" />
+            Sign Out
+          </button>
+        )}
       </nav>
-
-      <div className="p-4 border-t border-slate-200 dark:border-slate-800">
-        <div className="flex items-center gap-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-          <div className="size-9 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden shrink-0">
+      
+      <div className="mt-auto p-4 m-4 rounded-xl bg-muted/50 border border-border">
+        <div className="flex items-center gap-3">
+          <div className="size-10 rounded-full bg-muted overflow-hidden">
             {user?.user_metadata?.avatar_url ? (
               <img src={user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-white text-xs font-bold">
+              <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
                 {user?.email?.charAt(0).toUpperCase() || 'U'}
               </div>
             )}
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
-              {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Student User'}
+          <div className="overflow-hidden">
+            <p className="text-sm font-semibold truncate">
+              {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Student'}
             </p>
-            <p className="text-[10px] text-slate-500 truncate">{isGuest ? 'Guest Mode' : 'Premium Member'}</p>
+            <p className="text-xs text-muted-foreground">
+              {isGuest ? 'Guest Mode' : 'Logged In'}
+            </p>
           </div>
         </div>
       </div>
-    </aside>
-  );
-};
+    </div>
+
+    {/* Mobile Menu Button */}
+    <button
+      onClick={() => setSidebarOpen(!sidebarOpen)}
+      className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-card border border-border"
+    >
+      <Menu className="w-5 h-5" />
+    </button>
+
+    {/* Mobile overlay */}
+    {sidebarOpen && (
+      <div 
+        className="lg:hidden fixed inset-0 bg-black/50 z-30"
+        onClick={() => setSidebarOpen(false)}
+      />
+    )}
+  </aside>
+);
 
 export default Sidebar;
