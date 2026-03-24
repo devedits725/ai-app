@@ -133,30 +133,6 @@ const EssayWriterPage = () => {
                 Sign Out
               </button>
             )}
-          </nav>
-        </div>
-        <div className="mt-auto p-4 m-4 rounded-xl bg-muted/50 border border-border">
-          <div className="flex items-center gap-3">
-            <div className="size-10 rounded-full bg-muted overflow-hidden">
-              {user?.user_metadata?.avatar_url ? (
-                <img src={user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
-                  {user?.email?.charAt(0).toUpperCase() || 'U'}
-                </div>
-              )}
-            </div>
-            <div className="overflow-hidden">
-              <p className="text-sm font-semibold truncate">
-                {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Student'}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {isGuest ? 'Guest Mode' : 'Logged In'}
-              </p>
-            </div>
-          </div>
-        </div>
-      </aside>
 
       {/* Main Content */}
       <main className="flex-1 lg:ml-64 min-h-screen">
