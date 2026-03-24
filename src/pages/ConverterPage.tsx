@@ -88,9 +88,12 @@ const ConverterPanel = ({ converter }: { converter: Converter }) => {
           let result: number;
           if (converter.type === "temp") result = convertTemp(numVal, fromUnit, u.name);
           else {
-            const fromFactor = converter.units.find((x) => x.name === fromUnit)!.factor;
-            result = isNaN(numVal) ? 0 : (numVal / fromFactor) * u.factor;
-          }
+            const fromFactor = converter.units.find((x) => x.name === fromUnit);
+            if (fromFactor) {
+              result = isNaN(numVal) ? 0 : (numVal / fromFactor.factor) * u.factor;
+            } else {
+              result = 0; // Default to 0 if no matching unit found
+            }
           return (
             <div key={u.name} className="flex flex-col p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 transition-all hover:border-primary/20">
               <span className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">{u.name}</span>
