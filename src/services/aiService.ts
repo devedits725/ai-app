@@ -159,6 +159,12 @@ export async function callAI<T = unknown>(type: AIType, prompt: string): Promise
     throw new Error(error.message || "AI request failed");
   }
 
+  // Handle 400 status specifically - likely function doesn't exist or other issue
+  if (data && typeof data === 'object' && 'status' in data && data.status === 400) {
+    console.error("AI function returned 400 status:", data);
+    throw new Error("AI service temporarily unavailable. Please try again later.");
+  }
+
   // Log the full response for debugging
   console.log("AI response:", JSON.stringify(data, null, 2));
 
