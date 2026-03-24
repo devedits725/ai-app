@@ -155,18 +155,38 @@ export async function callAI<T = unknown>(type: AIType, prompt: string): Promise
   });
 
   if (error) {
+    console.error("Supabase function error:", error);
     throw new Error(error.message || "AI request failed");
   }
 
+  // Log the full response for debugging
+  console.log("AI response:", JSON.stringify(data, null, 2));
+
+  // Handle different response formats
   if (data?.error) {
+    console.error("AI returned error:", data.error);
     throw new Error(data.error);
   }
 
+  // Check if response has the expected data structure
+  let responseData = data;
+  
+  // Some AI functions might return wrapped responses
+  if (responseData && typeof responseData === 'object' && 'data' in responseData) {
+    responseData = responseData.data;
+  }
+
+  // If no data, return empty string instead of undefined
+  if (!responseData) {
+    console.warn("No data returned from AI function");
+    return "" as T;
+  }
+
   // Cache and count
-  setCachedResult(type, prompt, data);
+  setCachedResult(type, prompt, responseData);
   incrementCounter();
 
-  return data as T;
+  return responseData as T;
 }
 
 export interface FlashcardData {
